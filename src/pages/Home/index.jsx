@@ -5,6 +5,7 @@ import { Header } from '../../components/Header';
 import { Input } from '../../components/Input';
 import { Card } from '../../components/Card';
 import { Head } from '../../components/Head';
+import { Loading } from '../../components/Loading';
 
 import {
   Container,
@@ -58,7 +59,7 @@ export function Home() {
       <Cards>
         {
         loading ?
-        <p>Carregando...</p>
+        <Loading />
         :
           <>
           {

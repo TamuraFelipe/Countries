@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { BiArrowBack } from 'react-icons/bi';
 
-import { api } from '../../services/api';
+import UseFetch from '../../Hooks/useFetch';
 
 import { Header } from '../../components/Header';
 import { Head } from '../../components/Head';
+import { Loading } from '../../components/Loading';
 
 import {
     Container,
@@ -14,67 +15,54 @@ import {
 } from './styles';
 
 export const Details = () => {
-    const [detail, setDetail] = useState([]);
-    const [borders, setBorders] = useState([]);
-    const [loading, setLoading] = useState(true);
-    console.log(detail)
+    const {data, loading, borders, request} = UseFetch();
     let {name} = useParams();
     
     useEffect( () => {
-        async function fetchDetailCountry(){
-            const response = await api.get(`/name/${name}`);
-            const data = await response.data;
-            data[0]?.borders?.forEach( (border) => {
-                findBorderName(border)
-            })
-            setDetail(data[0]);
-        }
-        fetchDetailCountry();
-        async function findBorderName(sigla){
-            const response = await api.get(`/alpha/${sigla}`);
-            setBorders( borderPrev => [...borderPrev, response.data.name])
-        }
-        setBorders([]);
-        setLoading(false) 
-    }, [name]);
+        request(`/name/${name}`)
+    }, [name, request]);
             
   return (
     <Container>
         <Head 
-        title={detail.name}
-        description={`Descripton of ${detail.name}`}
-        img={detail.flag}
+        title={data[0]?.name}
+        description={`Descripton of ${data.name}`}
+        img={data[0]?.flag}
         />
         <Header />
-        <Content>
+        {
+            loading ?
+            <Loading />
+            :
+            <Content>
             <Link to='/'><BiArrowBack />Voltar</Link>
             {
-                detail && 
-                <Country key={detail.numericCode}>
-                    <img src={detail.flag} alt={`Bandeira da ${detail.name}`} />
+                data && 
+                <Country key={data.numericCode}>
+                    <img src={data[0]?.flag} alt={`Bandeira da ${data[0]?.name}`} />
                     <div className='country-details'>
-                        <h2>{detail.name}</h2>
+                        <h2>{data[0]?.name}</h2>
                         <div className='details-one'>
                             <p>
-                                <strong>Native Name:</strong> {detail.nativeName} <br />
-                                <strong>Population:</strong> {detail.population} <br />
-                                <strong>Region:</strong> {detail.region} <br />
-                                <strong>Sub Region:</strong> {detail.subregion} <br />
-                                <strong>Capital:</strong> {detail.capital} <br />
+                                <strong>Native Name:</strong> {data[0]?.nativeName} <br />
+                                <strong>Population:</strong> {data[0]?.population} <br />
+                                <strong>Region:</strong> {data[0]?.region} <br />
+                                <strong>Sub Region:</strong> {data[0]?.subregion} <br />
+                                <strong>Capital:</strong> {data[0]?.capital} <br />
                             </p>
                         </div>
                         <div className='details-two'>
                             <p>
-                                <strong>Top Level Domain:</strong> {detail.topLevelDomain} <br />
-                                <strong>Currencies:</strong> {detail.currencies ? detail.currencies[0]?.name : 'Não informado'} <br />
-                                <strong>Languages:</strong> {detail.languages ? detail.languages[0]?.name : 'Não informado'}
+                                <strong>Top Level Domain:</strong> {data[0]?.topLevelDomain} <br />
+                                <strong>Currencies:</strong> {data.currencies ? data.currencies[0]?.name : 'Não informado'} <br />
+                                <strong>Languages:</strong> {data.languages ? data.languages[0]?.name : 'Não informado'}
                             </p>
                         </div>
                         <div className='details-borders'>
                             <p><strong>Border Countries:</strong></p>
                                 { 
                                 loading ? 
-                                    <p>Carregando...</p>
+                                    <Loading />
                                     :
                                     <>
                                     {
@@ -98,6 +86,7 @@ export const Details = () => {
                 </Country>
             }
         </Content>
+        }
     </Container>
   )
 }
