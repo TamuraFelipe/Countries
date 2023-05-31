@@ -17,7 +17,7 @@ import {
 export const Details = () => {
     const {data, loading, borders, request} = UseFetch();
     let {name} = useParams();
-    
+
     useEffect( () => {
         request(`/name/${name}`)
     }, [name, request]);
@@ -54,8 +54,8 @@ export const Details = () => {
                         <div className='details-two'>
                             <p>
                                 <strong>Top Level Domain:</strong> {data[0]?.topLevelDomain} <br />
-                                <strong>Currencies:</strong> {data.currencies ? data.currencies[0]?.name : 'Não informado'} <br />
-                                <strong>Languages:</strong> {data.languages ? data.languages[0]?.name : 'Não informado'}
+                                <strong>Currencies:</strong> {data[0]?.currencies[0]?.name ? data[0]?.currencies[0]?.name : 'Não informado'} <br />
+                                <strong>Languages:</strong> {data[0]?.languages[0]?.name ? data[0]?.languages[0]?.name : 'Não informado'}
                             </p>
                         </div>
                         <div className='details-borders'>
