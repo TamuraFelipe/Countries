@@ -1,6 +1,6 @@
 # Rest Countries App
 
-![Preview do Rest Countries App]('./src/assets/preview.png')
+![Preview do Rest Countries App](./src/assets/preview.png)
 
 Este é um projeto de desafio do Frontend Mentor que envolve a criação de um aplicativo da web que lista todos os países e permite filtrar por continente e nome. O aplicativo também conta com um recurso de alternância de tema entre light mode e dark mode.
 
