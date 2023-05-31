@@ -63,6 +63,7 @@ export function Home() {
           <>
           {
             data && data.map( (item, index) => (
+              
               <Card key={index} data={item}/>
               ))
             }
