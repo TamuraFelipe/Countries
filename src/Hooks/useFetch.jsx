@@ -4,6 +4,7 @@ import { api } from '../services/api'
 
 const UseFetch = () => {
     const [data, setData] = useState([]);
+    const [borders, setBorders] = useState([])
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     
@@ -15,7 +16,12 @@ const UseFetch = () => {
             setLoading(true);
             const response = await api.get(url);
             json = await response.data;
-            console.log(json)
+            
+            if(json[0]?.borders){
+                json[0]?.borders?.forEach( (border) => {
+                    findBorderName(border)
+                })
+            }
         } catch (error) {
             json = null;
             setError(error.message)
@@ -23,13 +29,21 @@ const UseFetch = () => {
             setData(json)
             setLoading(false)
         }
+
+        async function findBorderName(sigla){
+            const response = await api.get(`/alpha/${sigla}`);
+            setBorders( borderPrev => [...borderPrev, response.data.name])
+        }
+        setBorders([]);
+        setLoading(false)
     }, [])
-  
+
   return {
     request,
     data,
     error,
     loading,
+    borders
   }
 }
 
