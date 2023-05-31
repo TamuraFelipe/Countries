@@ -18,5 +18,11 @@ export const Container = styled.div`
             padding: 12px;
         }
     }
-    
+    @media (max-width: 576px){
+        > a {
+            img {
+                height: initial;
+            }
+        }
+    }
 `;
