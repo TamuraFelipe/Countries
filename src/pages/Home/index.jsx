@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-
-import { api } from '../../services/api';
+import { useEffect } from 'react';
+import UseFetch from '../../Hooks/useFetch';
 
 import { Header } from '../../components/Header';
 import { Input } from '../../components/Input';
@@ -14,56 +13,23 @@ import {
 } from './styles';
 
 export function Home() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [allRegion, setAllRegion] = useState(false);
+  const {data, loading, request} = UseFetch();
   
- async function searchByRegion(region){
-  try {
-    setLoading(true)
-    setData([])
-    if(region === 'all'){
-      setAllRegion(true)
-    } else {
-      const response = await api.get(`/region/${region}`);
-      const data = response.data;
-      setData(data);
-    }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setLoading(false)
+  function searchByRegion(region){
+    request(`/region/${region}`);
   }
-  
- }
-
- async function searchByName(name){
-  try {
-    if(name === ''){
-      return name;
+  function searchByName(name){
+    if(!name){
+      request('/all');
     } else {
-      setLoading(true)
-      const response = await api.get(`/name/${name}`);
-      const data = response.data;
-      setData(data);
+      request(`/name/${name}`);
     }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setLoading(false)
   }
- }
-
+ 
   useEffect( () => {
-    async function fetchCountries(){
-      const response = await api.get('/all');
-      const data = response.data;
-      setData(data);
-    }
-    fetchCountries();
-    setLoading(false)
-  }, [allRegion]);
-
+    request('/all');
+  }, [request]);
+ 
   if(data)
   return (
     <Container>
@@ -97,6 +63,7 @@ export function Home() {
           <>
           {
             data && data.map( (item, index) => (
+              
               <Card key={index} data={item}/>
               ))
             }
